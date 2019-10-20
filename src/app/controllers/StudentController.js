@@ -1,7 +1,8 @@
 import * as Yup from 'yup';
 import Student from '../models/Student';
+import BaseController from './BaseController';
 
-class StudentController {
+class StudentController extends BaseController {
   async store(request, response) {
     try {
       const schema = Yup.object().shape({
@@ -18,6 +19,8 @@ class StudentController {
         Error('Erro na validação dos dados!');
       }
 
+      await raiseErrorUserNotIsAdmin(request.userId);
+
       const { name, email, age, weight, height } = request.body;
 
       const student = await Student.create({
@@ -30,7 +33,7 @@ class StudentController {
 
       return response.json({ student });
     } catch (error) {
-      return response.status(400).json({ error });
+      return response.status(400).json(error);
     }
   }
 }

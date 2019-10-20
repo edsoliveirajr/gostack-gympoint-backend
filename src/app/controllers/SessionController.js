@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import User from '../models/User';
 
-class SessionController {
+class SessionController extends BaseController {
   async store(request, response) {
     try {
       const schema = Yup.object().shape({
@@ -39,7 +39,7 @@ class SessionController {
         },
       });
     } catch (error) {
-      return response.status(400).json({ error });
+      return response.status(400).json(error);
     }
   }
 }

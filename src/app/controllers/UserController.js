@@ -1,7 +1,8 @@
 import * as Yup from 'yup';
 import User from '../models/User';
+import BaseController from './BaseController';
 
-class UserController {
+class UserController extends BaseController {
   async store(request, response) {
     try {
       const schema = Yup.object().shape({
@@ -16,7 +17,9 @@ class UserController {
         Error('Erro na validação dos dados!');
       }
 
-      const { name, email, password, administrator } = request.body;
+      await raiseErrorUserNotIsAdmin(request.userId);
+
+      const { name, email, password, admin } = request.body;
 
       if (!(await User.findOne({ email }))) {
         Error('Já existe um usuário com o email informado!');
@@ -26,12 +29,12 @@ class UserController {
         name,
         email,
         password,
-        administrator,
+        admin,
       });
 
       response.json({ user });
     } catch (error) {
-      response.status(400).json({ error });
+      response.status(400).json(error);
     }
   }
 }
